@@ -1,0 +1,21 @@
+.center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.signin {
+    padding-top:10% ;
+}
+
+.card{
+    padding: 30px;
+    text-align: center;
+}
+
+.header {
+    background-color: gray;
+    color: white;
+    padding: 10px;
+}
