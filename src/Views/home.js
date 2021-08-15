@@ -1,4 +1,4 @@
-import { Row, Container, Alert, Button } from "reactstrap";
+import { Row, Col, Container, Alert, Button } from "reactstrap";
 import AddWeight from "./add_weight.js";
 import WeightList from "./WeightList";
 import "../Styles/signin.css";
@@ -6,13 +6,15 @@ import React, { useEffect, useState } from "react";
 import db from "../config/config";
 import { useStore } from "../Store/store";
 import { useHistory } from "react-router-dom";
+import moment from "moment";
 
 function Home() {
   const [visible, setVisible] = useState(false);
   var [weights, setWeights] = useState({});
+
   var userId = useStore((state) => state.userId);
   var [view, setView] = useState(false);
-  var [count,setCount] = useState(0)
+  var [count, setCount] = useState(0);
   var [message, setMessage] = useState("");
   const history = useHistory();
 
@@ -20,25 +22,21 @@ function Home() {
     db.database()
       .ref(userId)
       .on("value", (snapshot) => {
-        if (snapshot.val() != null)
-          setWeights({
-            ...snapshot.val(),
-          });
+        if (snapshot.val() != null) setWeights(snapshot.val());
       });
   });
 
   const addWeight = async (data) => {
     try {
-      var timestamp = new Date().getTime();
+      var dt = new Date().getTime();
       db.database()
         .ref(userId)
-        .push({ weight: data.weight, timestamp: timestamp }, (err) => {
+        .push({ weight: data.weight, timestamp: dt }, (err) => {
           if (err) console.log(err);
-          setCount(count++);    
+          setCount(count++);
           setMessage("add");
           setVisible(true);
           setView(true);
-          
           window.setTimeout(() => {
             setVisible(false);
           }, 2000);
@@ -62,9 +60,11 @@ function Home() {
   return (
     <div>
       <Container className="signin">
-        <Button className="signout" onClick={() => signout()}>
-          Signout
-        </Button>
+        <Row className="signout-btn">
+          <Col>
+            <Button onClick={() => signout()}>Signout</Button>
+          </Col>
+        </Row>
         <h1>WEIGHT TRACKER</h1>
         <Alert color="info" isOpen={visible}>
           {message === "add"
@@ -80,7 +80,6 @@ function Home() {
         </Row>
         {view ? (
           <Row>
-             
             <WeightList
               weights={weights}
               visible={visible}

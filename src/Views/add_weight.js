@@ -16,7 +16,7 @@ function AddWeight(props) {
       <div>
         <Form onSubmit={handleSubmit(props.addWeight, "add")}>
           <Row className="center">
-            <Col sm={12} md={8}>
+            <Col xs={12} sm={12} md={9}>
               <input
                 type="number"
                 className="form-control"
@@ -26,7 +26,7 @@ function AddWeight(props) {
                 {...register("weight", { required: true })}
               />
             </Col>
-            <Col sm={12} md={4}>
+            <Col xs={12} sm={12} md={3}>
               <input
                 value="Add Weight"
                 className="btn btn-primary"

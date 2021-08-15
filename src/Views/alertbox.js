@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { Row, Col, Form } from "reactstrap";
 import { useStore } from "../Store/store";
 import db from "../config/config";
+import moment from 'moment'
 
 export default function Alertbox(props) {
   const {
@@ -19,7 +20,7 @@ export default function Alertbox(props) {
 
   const update = async (data) => {
     try {
-      var timestamp = new Date().getTime();
+      var timestamp = new Date();
       db.database()
         .ref(`${userId}/${props.currentId}`)
         .set({ weight: data.weight, timestamp: timestamp }, (err) => {

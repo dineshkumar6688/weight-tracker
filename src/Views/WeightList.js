@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card } from "reactstrap";
 import { useStore } from "../Store/store";
 import "../Styles/signin.css";
@@ -6,8 +6,8 @@ import Alertbox from "./alertbox";
 import db from "../config/config";
 
 export default function WeightList(props) {
-  const [open, setOpen] = React.useState(false);
-  const [currentId, setId] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [currentId, setId] = useState("");
   var userId = useStore((state) => state.userId);
   const handleOpenClose = (id) => {
     setId(id);
@@ -21,11 +21,11 @@ export default function WeightList(props) {
         .ref(`${userId}/${id}`)
         .remove()
         .then(() => {
-            props.setMessage("delete");
-            props.setVisible(true);
-            window.setTimeout(() => {
-              props.setVisible(false);
-            }, 2000);
+          props.setMessage("delete");
+          props.setVisible(true);
+          window.setTimeout(() => {
+            props.setVisible(false);
+          }, 2000);
         });
     } catch (err) {
       console.log(err);
@@ -49,17 +49,20 @@ export default function WeightList(props) {
                 <Col md={3}>{props.weights[id].weight}</Col>
                 <Col md={3}>{props.weights[id].timestamp}</Col>
                 <Col md={3}>
-                  <a
+                  <span
                     className="btn text-primary"
                     onClick={() => handleOpenClose(id)}
                   >
                     <i className="fas fa-pencil-alt"></i>
-                  </a>
+                  </span>
                 </Col>
                 <Col md={3}>
-                  <a className="btn text-danger" onClick={() => deleteData(id)}>
+                  <span
+                    className="btn text-danger"
+                    onClick={() => deleteData(id)}
+                  >
                     <i className="far fa-trash-alt"></i>
-                  </a>
+                  </span>
                 </Col>
               </Row>
               <Alertbox
