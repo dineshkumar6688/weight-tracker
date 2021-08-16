@@ -3,59 +3,37 @@ import AddWeight from "./add_weight.js";
 import WeightList from "./WeightList";
 import "../Styles/signin.css";
 import React, { useEffect, useState } from "react";
+import nodata from "../Images/nodata.png";
 import db from "../config/config";
 import { useStore } from "../Store/store";
 import { useHistory } from "react-router-dom";
-import moment from "moment";
 
 function Home() {
   const [visible, setVisible] = useState(false);
-  var [weights, setWeights] = useState({});
-
-  var userId = useStore((state) => state.userId);
-  var [view, setView] = useState(false);
-  var [count, setCount] = useState(0);
-  var [message, setMessage] = useState("");
+  let [weights, setWeights] = useState({});
+  let userId = useStore((state) => state.userId);
+  let [message, setMessage] = useState("");
   const history = useHistory();
   const [data, setData] = useState([]);
-  var item = [];
 
   useEffect(() => {
     db.database()
       .ref(userId)
       .on("value", (snapshot) => {
-        if (snapshot.val() != null) setWeights(snapshot.val());
+        if (snapshot.val() != null) {
+          let item = [];
+          setWeights(snapshot.val());
+          Object.keys(weights).map((id) =>
+            item.push({
+              id: id,
+              weight: weights[id].weight,
+              timestamp: weights[id].timestamp,
+            })
+          );
+          setData(item.reverse());
+        }
       });
-    Object.keys(weights).map((id) =>
-      item.push({
-        id: id,
-        weight: weights[id].weight,
-        timestamp: weights[id].timestamp,
-      })
-    );
-    item = item.reverse();
-    setData(item);
   });
-
-  const addWeight = async (data) => {
-    try {
-      var dt = new Date().getTime();
-      db.database()
-        .ref(userId)
-        .push({ weight: data.weight, timestamp: dt }, (err) => {
-          if (err) console.log(err);
-          setCount(count++);
-          setMessage("add");
-          setVisible(true);
-          setView(true);
-          window.setTimeout(() => {
-            setVisible(false);
-          }, 2000);
-        });
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   const signout = () => {
     db.auth()
@@ -87,19 +65,22 @@ function Home() {
             : ""}
         </Alert>
         <Row>
-          <AddWeight addWeight={addWeight} />
+          <AddWeight setVisible={setVisible} setMessage={setMessage} />
         </Row>
-        {data.length>0 ? (
+        {data.length >= 1 ? (
           <Row>
             <WeightList
               weights={data}
               visible={visible}
               setVisible={setVisible}
               setMessage={setMessage}
+              setData={setData}
             />
           </Row>
         ) : (
-          "No data"
+          <div style={{ textAlign: "center" }}>
+            <img alt="anonymous-signin" width="50%" src={nodata} />
+          </div>
         )}
       </Container>
     </div>

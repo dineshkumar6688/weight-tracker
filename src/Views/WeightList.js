@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Row, Col, Card } from "reactstrap";
 import { useStore } from "../Store/store";
 import "../Styles/signin.css";
 import Alertbox from "./alertbox";
 import db from "../config/config";
-import mooment from "moment";
 import moment from "moment";
 
 export default function WeightList(props) {
@@ -14,17 +13,18 @@ export default function WeightList(props) {
   const handleOpenClose = (id) => {
     setId(id);
     setOpen(!open);
-    console.log(currentId);
   };
 
-  const deleteData = (id) => {
+  const deleteData = async (id) => {
     try {
-      db.database()
+      if (props.weights.length === 1) props.setData([]);
+      await db
+        .database()
         .ref(`${userId}/${id}`)
         .remove()
-        .then(() => {
+        .then(async () => {
           props.setMessage("delete");
-          props.setVisible(true);
+          await props.setVisible(true);
           window.setTimeout(() => {
             props.setVisible(false);
           }, 2000);
@@ -44,41 +44,42 @@ export default function WeightList(props) {
           <Col md={3}>DELETE</Col>
         </Row>
         <hr />
-        {props.weights.map((value) => {
-          return (
-            <div>
-              <Row>
-                <Col md={3}>{value.weight}</Col>
-                <Col md={3}>{moment(value.timestamp).format("lll")}</Col>
-                <Col md={3}>
-                  <span
-                    className="btn text-primary"
-                    onClick={() => handleOpenClose(value.id)}
-                  >
-                    <i className="fas fa-pencil-alt"></i>
-                  </span>
-                </Col>
-                <Col md={3}>
-                  <span
-                    className="btn text-danger"
-                    onClick={() => deleteData(value.id)}
-                  >
-                    <i className="far fa-trash-alt"></i>
-                  </span>
-                </Col>
-              </Row>
-              <Alertbox
-                open={open}
-                handleOpenClose={handleOpenClose}
-                currentId={currentId}
-                visible={props.visible}
-                setVisible={props.setVisible}
-                setMessage={props.setMessage}
-              />
-              <br />
-            </div>
-          );
-        })}
+        {props.weights &&
+          props.weights.map((value) => {
+            return (
+              <div>
+                <Row>
+                  <Col md={3}>{value.weight}</Col>
+                  <Col md={3}>{moment(value.timestamp).format("lll")}</Col>
+                  <Col md={3}>
+                    <span
+                      className="btn text-primary"
+                      onClick={() => handleOpenClose(value.id)}
+                    >
+                      <i className="fas fa-pencil-alt"></i>
+                    </span>
+                  </Col>
+                  <Col md={3}>
+                    <span
+                      className="btn text-danger"
+                      onClick={() => deleteData(value.id)}
+                    >
+                      <i className="far fa-trash-alt"></i>
+                    </span>
+                  </Col>
+                </Row>
+                <Alertbox
+                  open={open}
+                  handleOpenClose={handleOpenClose}
+                  currentId={currentId}
+                  visible={props.visible}
+                  setVisible={props.setVisible}
+                  setMessage={props.setMessage}
+                />
+                <br />
+              </div>
+            );
+          })}
       </Card>
     </div>
   );

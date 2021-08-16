@@ -6,7 +6,6 @@ import { useForm } from "react-hook-form";
 import { Row, Col, Form } from "reactstrap";
 import { useStore } from "../Store/store";
 import db from "../config/config";
-import moment from 'moment'
 
 export default function Alertbox(props) {
   const {
