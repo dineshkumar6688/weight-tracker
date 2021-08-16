@@ -4,6 +4,8 @@ import { useStore } from "../Store/store";
 import "../Styles/signin.css";
 import Alertbox from "./alertbox";
 import db from "../config/config";
+import mooment from "moment";
+import moment from "moment";
 
 export default function WeightList(props) {
   const [open, setOpen] = useState(false);
@@ -42,16 +44,16 @@ export default function WeightList(props) {
           <Col md={3}>DELETE</Col>
         </Row>
         <hr />
-        {Object.keys(props.weights).map((id) => {
+        {props.weights.map((value) => {
           return (
             <div>
               <Row>
-                <Col md={3}>{props.weights[id].weight}</Col>
-                <Col md={3}>{props.weights[id].timestamp}</Col>
+                <Col md={3}>{value.weight}</Col>
+                <Col md={3}>{moment(value.timestamp).format("lll")}</Col>
                 <Col md={3}>
                   <span
                     className="btn text-primary"
-                    onClick={() => handleOpenClose(id)}
+                    onClick={() => handleOpenClose(value.id)}
                   >
                     <i className="fas fa-pencil-alt"></i>
                   </span>
@@ -59,7 +61,7 @@ export default function WeightList(props) {
                 <Col md={3}>
                   <span
                     className="btn text-danger"
-                    onClick={() => deleteData(id)}
+                    onClick={() => deleteData(value.id)}
                   >
                     <i className="far fa-trash-alt"></i>
                   </span>

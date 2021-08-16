@@ -17,6 +17,8 @@ function Home() {
   var [count, setCount] = useState(0);
   var [message, setMessage] = useState("");
   const history = useHistory();
+  const [data, setData] = useState([]);
+  var item = [];
 
   useEffect(() => {
     db.database()
@@ -24,6 +26,15 @@ function Home() {
       .on("value", (snapshot) => {
         if (snapshot.val() != null) setWeights(snapshot.val());
       });
+    Object.keys(weights).map((id) =>
+      item.push({
+        id: id,
+        weight: weights[id].weight,
+        timestamp: weights[id].timestamp,
+      })
+    );
+    item = item.reverse();
+    setData(item);
   });
 
   const addWeight = async (data) => {
@@ -78,10 +89,10 @@ function Home() {
         <Row>
           <AddWeight addWeight={addWeight} />
         </Row>
-        {view ? (
+        {data.length>0 ? (
           <Row>
             <WeightList
-              weights={weights}
+              weights={data}
               visible={visible}
               setVisible={setVisible}
               setMessage={setMessage}

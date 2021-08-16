@@ -20,10 +20,10 @@ export default function Alertbox(props) {
 
   const update = async (data) => {
     try {
-      var timestamp = new Date();
+      var dt = new Date().getTime();
       db.database()
         .ref(`${userId}/${props.currentId}`)
-        .set({ weight: data.weight, timestamp: timestamp }, (err) => {
+        .set({ weight: data.weight, timestamp: dt }, (err) => {
           if (err) console.log(err);
           props.handleOpenClose();
           props.setMessage("update");
